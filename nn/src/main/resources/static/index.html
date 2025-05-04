@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Classifying frontoffice</title>
+        <meta charset="UTF-8" />
+    </head>
+    <body>
+        <h1>Classifying frontoffice</h1>
+        <h2>Configure a classifier</h2>
+        <form method=post action="./config" enctype="application/x-www-form-urlencoded" name="config">
+           <label for="graph">Graph name ?</label>
+           <select name="graph" id="graph">
+              <option value="mlp1" selected="">MLP 1</option>
+              <option value="mlp2" >MLP 2</option>
+           </select>
+           <input type="submit" value="Config">
+        </form>
+        <h2>Classify a graph</h2>
+        <form method=post action="./classify" enctype="multipart/form-data" name="classify">
+           <input type="file" name="graph">
+           <input type="submit" value="Classify">
+        </form>
+        <script>
+           var loadFile = function(event) {
+              var preview = document.getElementById('preview');
+              preview.src = URL.createObjectURL(event.target.files[0]);
+              preview.onload = function() {
+                 URL.revokeObjectURL(preview.src); // free memory
+              };
+           };
+        </script>
+    </body>
+</html>
