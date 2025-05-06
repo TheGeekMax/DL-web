@@ -4,3 +4,5 @@ docker stop ia; docker rm ia
 docker stop nn; docker rm nn
 ( cd nn; docker build --rm -t nn . )
 
+docker compose -f docker-compose.yml up
+

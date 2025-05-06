@@ -4,8 +4,6 @@ services:
     container_name: ia
     networks:
       - nn
-    volumes:
-     - ./zzz:/app/saves
   nn:
     image: nn
     container_name: nn

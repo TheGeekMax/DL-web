@@ -23,15 +23,15 @@ public class NNController {
 
     @PostMapping (value="/config")
     @ResponseStatus(HttpStatus.OK)
-    public String config (@QueryParam( "graph" ) String graph) {
+    public String config (@QueryParam( "model" ) String name) {
         
-        String url = "http://ia:80/config?graph={graph}";
+        String url = "http://ia:80/config?model={name}";
 
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
         
         Map<String, String> params = new TreeMap<>();
-        params.put("graph", graph);
+        params.put("name", name);
 
         RestTemplate template = new RestTemplate();
         ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, requestEntity, String.class, params);
@@ -41,7 +41,7 @@ public class NNController {
 
     @PostMapping (value="/classify")
     @ResponseStatus(HttpStatus.OK)
-    public String classify (@RequestParam( "graph" ) MultipartFile graph) {
+    public String classify (@RequestParam( "model" ) String name) {
 
         String url = "http://ia:80/classify";
 
@@ -49,7 +49,7 @@ public class NNController {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("graph", graph.getResource());
+        body.add("graph", name);
         
         Map<String, String> params = new TreeMap<>();
 
