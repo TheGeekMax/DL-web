@@ -12,8 +12,9 @@ app = Flask(__name__)
 def doConfiguration():
    print ("configuring")
    model_name = "mlp1"
-   if 'name' in request.args:
-      model_name = request.args['graph']
+   if 'model' in request.args:
+      model_name = request.args['model']
+      print ("model name is " + model_name)
    classify.config(model_name)
    print ("done")
    return { "status" : "ok", "data": "configuration is done" }

@@ -17,26 +17,35 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class NNController {
 
     @PostMapping (value="/config")
     @ResponseStatus(HttpStatus.OK)
-    public String config (@QueryParam( "model" ) String name) {
+    public String config (@RequestParam( "model" ) String modelName) {
+
+        if (modelName == null || modelName.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The 'model' parameter is required");
+        }
         
-        String url = "http://ia:80/config?model={name}";
+        String url = "http://ia:80/config?model={model}";
 
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
         
         Map<String, String> params = new TreeMap<>();
-        params.put("name", name);
+        params.put("model", modelName);
 
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, requestEntity, String.class, params);
-
-        return response.getBody();
+        try {
+            RestTemplate template = new RestTemplate();
+            ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, requestEntity, String.class, params);
+            return response.getBody();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error calling service: " + e.getMessage(), e);
+        }
     }
 
     @PostMapping (value="/classify")
