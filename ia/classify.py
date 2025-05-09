@@ -12,7 +12,8 @@ import shutil
 classifier = None
 
 model_handle_map = {
-  "mlp1" : "mlp_default.h5"
+  "mlp1" : "mlp_default.h5",
+  "mlp2" : "mlp_other_version.h5",
 }
 
 def config (model_name) :
@@ -41,6 +42,7 @@ def config (model_name) :
         
 def classify (text) :
   global classifier
+  print(text)
   if classifier is None :
     print("Classifier not configured")
     return None

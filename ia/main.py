@@ -23,35 +23,21 @@ def doConfiguration():
 @app.route ('/classify', methods=['POST'])
 def doClassification():
    print ("classifying")
-   """
-   if 'picture' not in request.files:
-      return ("bad url", 400)
-   picture = request.files['picture']
-   if not picture :
-      return ("picture is wrong", 400)
-   if picture.filename == '':
-      return ("picture is empty", 400)
-   if not allowed_file(picture.filename):
-      return ("picture is empty", 400)
-   filename = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(picture.filename))
-   picture.save(filename)
-   result = classify.classify(filename);
-   print (result)
-   """
-   list = []
+   text = ""
    if 'text' in request.form:
-      list = request.form['text'].split("\n")
+      text = request.form['text']
    if 'text' in request.args:
-      list = request.args['text'].split("\n")
+      text = request.args['text']
    if 'text' in request.json:
-      list = request.json['text'].split("\n")
-   if len(list) == 0:
-      return ("no text to classify", 400)
-   classifier = classify.classify(list[0])
-   result = []
-   for i in range(len(list)):
-      res = classify.classify(list[i])
-      result.append({"text": list[i], "result": res})
+      text = request.json['text']
+   
+   res = classify.classify(text)
+   result = {}
+   if res is not None:
+      result = { "result": res }
+   else:
+      result = { "result": "error" }
+   
    print (result)
    print ("done")
    return { "status" : "ok", "data": result}

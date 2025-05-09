@@ -1,5 +1,6 @@
 package fr.uha.hassenforder.nn;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.ws.rs.QueryParam;
@@ -50,22 +51,26 @@ public class NNController {
 
     @PostMapping (value="/classify")
     @ResponseStatus(HttpStatus.OK)
-    public String classify (@RequestParam( "model" ) String name) {
+    public String classify (@RequestParam( "data" ) String dataName) {
 
         String url = "http://ia:80/classify";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("graph", name);
+        // Create a Map for the JSON body
+        Map<String, String> jsonBody = new HashMap<>();
+        jsonBody.put("text", dataName);
         
-        Map<String, String> params = new TreeMap<>();
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(jsonBody, headers);
         
         RestTemplate template = new RestTemplate();
-        ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, requestEntity, String.class, params);
+        ResponseEntity<String> response = template.exchange(
+            url, 
+            HttpMethod.POST, 
+            requestEntity, 
+            String.class
+        );
 
         return response.getBody();
     }
